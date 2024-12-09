@@ -11,7 +11,7 @@ signal score_changed
 
 # Scene resource
 var item_scene: PackedScene = load("res://scenes/item/item.tscn")
-
+var door_scene = load("res://scenes/item/door.tscn")
 # Score with setter
 var score: int: set = set_score
 
@@ -20,6 +20,7 @@ func _ready() -> void:
 	get_player()
 	set_camera_limits() 
 	spawn_items()
+	print($player.position)
 	
 func set_camera_limits() -> void:
 	# Sets the camera limits based on the world tilemap's size and tile size
@@ -39,10 +40,21 @@ func spawn_items() -> void:
 	for cell in item_cells:
 		var data: TileData = get_items().get_cell_tile_data(cell)
 		var type: String = data.get_custom_data("type")  # Assuming "type" is stored as String
-		var item: Node = item_scene.instantiate()
-		add_child(item)
-		item.init(type, get_items().map_to_local(cell))
-		item.picked_up.connect(self._on_item_picked_up)
+		if type =="door":
+			print("DOOR")
+			var door = door_scene.instantiate()
+			add_child(door)
+			door.position = get_items().map_to_local(cell)
+			door.body_entered.connect(_on_door_entered)
+		else:
+			var item: Node = item_scene.instantiate()
+			add_child(item)
+			item.init(type, get_items().map_to_local(cell))
+			item.picked_up.connect(self._on_item_picked_up)
+
+func _on_door_entered(body):
+	print("HERE")
+	GameState.next_level()
 
 # Handles item pickup and increments score
 func _on_item_picked_up() -> void:
@@ -94,3 +106,8 @@ func get_world() -> TileMapLayer:
 		else:
 			push_error("Node 'World' not found")
 	return _world
+	
+func _on_player_died():
+	print("DEAD")
+	GameState.restart()
+	print("HI")

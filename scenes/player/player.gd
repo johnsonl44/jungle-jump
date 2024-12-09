@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var run_speed: float = 150
 @export var jump_speed: float = -300
 
-@export var life: int =3:
+@export var life: int =5:
 	set(value):
 		life = value
 		life_changed.emit(life)
@@ -34,6 +34,13 @@ func _physics_process(delta: float) -> void:
 		var collider: Object = collision.get_collider()
 		if collider.is_in_group("danger"):
 			hurt()
+		if collider.is_in_group("enemies"):
+			
+			if position.y<collider.position.y:
+				collider.take_damage()
+				velocity.y = -200
+			else:
+				hurt()
 	
 
 func _ready() -> void:
@@ -53,6 +60,7 @@ func change_state(new_state: int) -> void:
 		JUMP:
 			$AnimationPlayer.play("jump_up")
 		DEAD:
+			died.emit() 
 			hide()
 
 func get_input() -> void:
