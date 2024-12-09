@@ -25,6 +25,16 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if state == JUMP and is_on_floor():
 		change_state(IDLE)
+	if state == HURT and is_on_floor():
+		change_state(IDLE)
+	if state == HURT:
+		return
+	for i in range(get_slide_collision_count()): 
+		var collision: KinematicCollision2D = get_slide_collision(i)
+		var collider: Object = collision.get_collider()
+		if collider.is_in_group("danger"):
+			hurt()
+	
 
 func _ready() -> void:
 	change_state(IDLE)
@@ -80,6 +90,7 @@ func get_input() -> void:
 func hurt() -> void:
 	if state != HURT:
 		change_state(HURT)
+		life = life-1
 
 func reset(_position: Vector2) -> void:
 	position = _position

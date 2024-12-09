@@ -6,6 +6,8 @@ var textures: Dictionary ={
 	"cherry":
 		"res://assets/sprites/cherry.png",
 	"gem":
+		"res://assets/sprites/gem.png",
+	"door":#FIX THIS LATER !!!!!!!!!!!!!!!!!!!!!!!!!
 		"res://assets/sprites/gem.png"
 }
 

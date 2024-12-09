@@ -148,7 +148,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dr7k8"]
-size = Vector2(13, 18)
+size = Vector2(12, 19)
 
 [node name="player" type="CharacterBody2D"]
 position = Vector2(0, 1)
@@ -170,8 +170,9 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.5, -10)
+position = Vector2(0, -9.5)
 shape = SubResource("RectangleShape2D_dr7k8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(0, -60)
 zoom = Vector2(2.5, 2.5)
