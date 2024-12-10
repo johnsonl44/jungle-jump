@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://km1tqlc7tx73"]
+[gd_scene load_steps=12 format=3 uid="uid://km1tqlc7tx73"]
 
 [ext_resource type="Script" path="res://scenes/enemy/enemy.gd" id="1_rnkg1"]
 [ext_resource type="Texture2D" uid="uid://b8arh352sep5c" path="res://assets/sprites/opossum.png" id="1_uwi3n"]
 [ext_resource type="Texture2D" uid="uid://buuieoxw12vpa" path="res://assets/sprites/enemy-death.png" id="3_pj1gp"]
+[ext_resource type="AudioStream" uid="uid://brapq3p8g3ac" path="res://assets/audio/pop.mp3" id="4_bev2s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v37kq"]
 size = Vector2(24, 17)
@@ -161,5 +162,10 @@ visible = false
 texture = ExtResource("3_pj1gp")
 hframes = 6
 frame = 1
+
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_bev2s")
+volume_db = -5.374
+area_mask = 3
 
 [connection signal="animation_finished" from="Death" to="." method="_on_death_animation_finished"]

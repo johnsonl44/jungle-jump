@@ -8,3 +8,4 @@ func update_life(value):
 	
 func update_score(value):
 	$HBoxContainer/Score.text = str(value)
+	$Pickup.play()

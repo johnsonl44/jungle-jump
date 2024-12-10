@@ -34,6 +34,7 @@ func take_damage():
 	$DeathSprite.show()
 	$Death.play("death")
 	$CollisionShape2D.set_deferred("disabled",true)
+	$DeathSound.play()
 	set_physics_process(false)
 
 func _on_death_animation_finished(anim_name: StringName) -> void:

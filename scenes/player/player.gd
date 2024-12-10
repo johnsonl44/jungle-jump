@@ -9,13 +9,20 @@ extends CharacterBody2D
 		life = value
 		life_changed.emit(life)
 		if life<=0:
-			change_state(DEAD)
+			if $DeathTimer.is_stopped():
+				$AnimationPlayer.play("hurt")
+				$dead.play()
+				$DeathTimer.start()
+				print("TIME STARt")
 
 signal life_changed(life: int)
 signal died
 
 enum {IDLE,RUN,JUMP,HURT,DEAD}
 var state:int = IDLE
+@export var invincibility_duration: float = 1.0
+var is_invincible: bool = false
+
 
 func _physics_process(delta: float) -> void:
 	velocity.y += gravity * delta
@@ -23,9 +30,9 @@ func _physics_process(delta: float) -> void:
 	get_input()
 	
 	move_and_slide()
-	if state == JUMP and is_on_floor():
+	if state == JUMP and is_on_floor() and life!=0:
 		change_state(IDLE)
-	if state == HURT and is_on_floor():
+	if state == HURT and is_on_floor() and life!=0:
 		change_state(IDLE)
 	if state == HURT:
 		return
@@ -41,10 +48,14 @@ func _physics_process(delta: float) -> void:
 				velocity.y = -200
 			else:
 				hurt()
-	
+		if collider.is_in_group("player death"):
+			fall_death()
 
 func _ready() -> void:
 	change_state(IDLE)
+
+func fall_death():
+	life=0
 
 func change_state(new_state: int) -> void:
 	state = new_state
@@ -55,6 +66,8 @@ func change_state(new_state: int) -> void:
 			$AnimationPlayer.play("run")
 		HURT:
 			$AnimationPlayer.play("hurt")
+			if not $hurt.playing:
+				$hurt.play()
 			velocity.y = -200
 			velocity.x = -100 * sign(velocity.x)
 		JUMP:
@@ -64,7 +77,7 @@ func change_state(new_state: int) -> void:
 			hide()
 
 func get_input() -> void:
-	if state == HURT:
+	if state == HURT or life==0:
 		return
 	var right: bool = Input.is_action_pressed("right")
 	var left: bool = Input.is_action_pressed("left")
@@ -83,25 +96,39 @@ func get_input() -> void:
 		change_state(JUMP)
 		velocity.y = jump_speed
 	
-	if state==IDLE and velocity.x !=0:
+	if state==IDLE and velocity.x !=0 and life!=0:
 		change_state(RUN)
 	
-	if state == RUN and velocity.x == 0:
+	if state == RUN and velocity.x == 0 and life!=0:
 		change_state(IDLE)
 	
-	if state in [IDLE,RUN] and !is_on_floor():
+	if state in [IDLE,RUN] and !is_on_floor() and life!=0:
 		change_state(JUMP)
 	
-	if state == JUMP and velocity.y>0:
+	if state == JUMP and velocity.y>0 and life!=0:
 		$AnimationPlayer.play("jump_down")
 
 func hurt() -> void:
-	if state != HURT:
-		change_state(HURT)
-		life = life-1
+	if is_invincible or life <= 0:  # Prevent taking damage if invincible or dead
+		return
+	is_invincible = true
+	$InvincibilityTimer.start()  # Start the invincibility timer
+	change_state(HURT)
+	life -= 1
+
+
 
 func reset(_position: Vector2) -> void:
 	position = _position
 	show()
 	change_state(IDLE)
 	life = 0
+
+
+func _on_death_timer_timeout() -> void:
+	print("DEAD TIMER")
+	change_state(DEAD)
+
+
+func _on_invincibility_timer_timeout() -> void:
+	is_invincible=false

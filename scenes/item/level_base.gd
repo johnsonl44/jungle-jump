@@ -20,8 +20,13 @@ func _ready() -> void:
 	get_player()
 	set_camera_limits() 
 	spawn_items()
-	print($player.position)
-	
+	start_music()
+
+func start_music():
+	print("MUSIC")
+	$LevelMusic.play()
+
+
 func set_camera_limits() -> void:
 	# Sets the camera limits based on the world tilemap's size and tile size
 	var map_size: Rect2 = get_world().get_used_rect()
@@ -34,6 +39,7 @@ func set_camera_limits() -> void:
 
 # Spawns items based on the TileMapLayer's used cells
 func spawn_items() -> void:
+	
 	# Use the lazy-initialized getter for Items
 	var item_cells: Array[Vector2i] = get_items().get_used_cells()
 	
@@ -53,12 +59,19 @@ func spawn_items() -> void:
 			item.picked_up.connect(self._on_item_picked_up)
 
 func _on_door_entered(body):
-	print("HERE")
+	$LevelMusic.stop()
 	GameState.next_level()
 
 # Handles item pickup and increments score
-func _on_item_picked_up() -> void:
-	score += 1
+func _on_item_picked_up(item:String) -> void:
+	if item == "cherry":
+		var player = get_player()
+		if player.life < 5:  # Assuming the player script has a health variable
+			player.life += 1
+			$LifeUp.play()
+			player.life_changed.emit(player.life)
+	if item == "gem":
+		score += 1
 
 # Sets the score and emits the signal
 func set_score(value: int) -> void:
@@ -108,6 +121,5 @@ func get_world() -> TileMapLayer:
 	return _world
 	
 func _on_player_died():
-	print("DEAD")
+	$LevelMusic.stop()
 	GameState.restart()
-	print("HI")

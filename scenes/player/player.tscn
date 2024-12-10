@@ -1,7 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://b38nrbxyhdvxo"]
+[gd_scene load_steps=15 format=3 uid="uid://b38nrbxyhdvxo"]
 
 [ext_resource type="Texture2D" uid="uid://g3irk7lm8u2s" path="res://assets/player_sheet.png" id="1_jpuio"]
 [ext_resource type="Script" path="res://scenes/player/player.gd" id="1_yjma6"]
+[ext_resource type="AudioStream" uid="uid://dugl1p76pm4h2" path="res://assets/audio/hurt1.ogg" id="3_8mwuh"]
+[ext_resource type="AudioStream" uid="uid://cr3ilfmcufhks" path="res://assets/audio/EndSound.wav" id="3_hv4qf"]
 
 [sub_resource type="Animation" id="Animation_h85ut"]
 length = 0.001
@@ -176,3 +178,20 @@ shape = SubResource("RectangleShape2D_dr7k8")
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(0, -60)
 zoom = Vector2(2.5, 2.5)
+
+[node name="DeathTimer" type="Timer" parent="."]
+wait_time = 2.25
+one_shot = true
+
+[node name="dead" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_hv4qf")
+
+[node name="hurt" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_8mwuh")
+volume_db = -28.21
+
+[node name="InvincibilityTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
+[connection signal="timeout" from="InvincibilityTimer" to="." method="_on_invincibility_timer_timeout"]

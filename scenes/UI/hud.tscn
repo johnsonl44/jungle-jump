@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8wft0q66wopk"]
+[gd_scene load_steps=6 format=3 uid="uid://c8wft0q66wopk"]
 
 [ext_resource type="FontFile" uid="uid://cok1fgax6jv00" path="res://assets/Kenney Thick.ttf" id="1_4vaoq"]
 [ext_resource type="Script" path="res://scenes/UI/hud.gd" id="1_bp13y"]
 [ext_resource type="Texture2D" uid="uid://d2wnbcvw41g4p" path="res://assets/heart.png" id="2_6ymk0"]
+[ext_resource type="AudioStream" uid="uid://fr8gkdjeay3k" path="res://assets/audio/pickup2.ogg" id="4_gxjjt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8iwks"]
 font = ExtResource("1_4vaoq")
@@ -51,3 +52,9 @@ texture = ExtResource("2_6ymk0")
 [node name="L5" type="TextureRect" parent="HBoxContainer/LifeCounter"]
 layout_mode = 2
 texture = ExtResource("2_6ymk0")
+
+[node name="Pickup" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_gxjjt")
+volume_db = -39.694
+max_distance = 1e+08
+area_mask = 3
